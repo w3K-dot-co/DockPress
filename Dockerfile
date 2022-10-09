@@ -1,7 +1,5 @@
 #
-# NOTE: THIS DOCKERFILE IS GENERATED VIA "apply-templates.sh"
-#
-# PLEASE DO NOT EDIT IT DIRECTLY.
+# NOTE: Tailor to taste
 #
 
 FROM php:8.1-fpm-alpine
@@ -23,11 +21,15 @@ RUN set -ex; \
 	apk add --no-cache --virtual .build-deps \
 		$PHPIZE_DEPS \
 		freetype-dev \
+		gettext-dev \
 		icu-dev \
 		imagemagick-dev \
+		imap-dev \
 		libjpeg-turbo-dev \
 		libpng-dev \
 		libwebp-dev \
+		libxml2-dev \
+		libxslt-dev \
 		libzip-dev \
 	; \
 	\
@@ -38,10 +40,21 @@ RUN set -ex; \
 	; \
 	docker-php-ext-install -j "$(nproc)" \
 		bcmath \
+		bz2 \
+		calendar \
 		exif \
 		gd \
+		gettext \
+		imap \
 		intl \
 		mysqli \
+		opcache \
+		pcntl \
+		pdo_mysql \
+		posix \
+		soap \
+		sockets \
+		xsl \
 		zip \
 	; \
 # WARNING: imagick is likely not supported on Alpine: https://github.com/Imagick/imagick/issues/328
@@ -141,5 +154,5 @@ VOLUME /var/www/html
 COPY --chown=www-data:www-data wp-config-docker.php /usr/src/wordpress/
 COPY docker-entrypoint.sh /usr/local/bin/
 
-ENTRYPOINT ["docker-entrypoint.sh"]
+ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
 CMD ["php-fpm"]
